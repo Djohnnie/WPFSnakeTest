@@ -61,13 +61,66 @@ tail.Step();
 Check(tail.Status == GameStatus.Playing && tail.Segments[0] == new Cell(8, 6) &&
       tail.Segments.Count == 4, "Moving into the vacated tail cell must be allowed.");
 
-SnakeGame wall = new(new ScriptedRandom(0));
+SnakeGame rightWall = new(new ScriptedRandom(96, 0));
 for (int i = 0; i < 8; i++)
 {
-    wall.Step();
+    rightWall.Step();
 }
-Check(wall.Status == GameStatus.Lost && wall.Segments[0] == new Cell(15, 6),
-    "Hitting a wall must end the game without moving outside the board.");
+Check(rightWall.Status == GameStatus.Playing && rightWall.Segments[0] == new Cell(0, 6) &&
+      rightWall.Segments.Count == 4 && rightWall.Food == new Cell(0, 0),
+    "Crossing the right wall must wrap and eat food on the opposite side.");
+rightWall.Step();
+Check(rightWall.Segments[0] == new Cell(1, 6) && rightWall.Segments.Count == 4,
+    "The snake must continue moving normally after wrapping.");
+
+SnakeGame leftWall = new(new ScriptedRandom(0));
+leftWall.Turn(Direction.Up);
+leftWall.Step();
+leftWall.Turn(Direction.Left);
+for (int i = 0; i < 9; i++)
+{
+    leftWall.Step();
+}
+Check(leftWall.Status == GameStatus.Playing && leftWall.Segments[0] == new Cell(15, 5),
+    "Crossing the left wall must wrap to the right side.");
+
+SnakeGame topWall = new(new ScriptedRandom(0));
+topWall.Turn(Direction.Up);
+for (int i = 0; i < 7; i++)
+{
+    topWall.Step();
+}
+Check(topWall.Status == GameStatus.Playing && topWall.Segments[0] == new Cell(8, 11),
+    "Crossing the top wall must wrap to the bottom.");
+
+SnakeGame bottomWall = new(new ScriptedRandom(0));
+bottomWall.Turn(Direction.Down);
+for (int i = 0; i < 6; i++)
+{
+    bottomWall.Step();
+}
+Check(bottomWall.Status == GameStatus.Playing && bottomWall.Segments[0] == new Cell(8, 0),
+    "Crossing the bottom wall must wrap to the top.");
+
+SnakeGame wrappedCollision = new(new ScriptedRandom(102, 102, 0));
+for (int i = 0; i < 6; i++)
+{
+    wrappedCollision.Step();
+}
+wrappedCollision.Turn(Direction.Up);
+wrappedCollision.Step();
+wrappedCollision.Turn(Direction.Right);
+wrappedCollision.Step();
+wrappedCollision.Turn(Direction.Down);
+wrappedCollision.Step();
+wrappedCollision.Turn(Direction.Right);
+wrappedCollision.Step();
+wrappedCollision.Turn(Direction.Up);
+wrappedCollision.Step();
+wrappedCollision.Turn(Direction.Left);
+wrappedCollision.Step();
+Check(wrappedCollision.Status == GameStatus.Lost && wrappedCollision.Segments[0] == new Cell(0, 5),
+    "Wrapping into the snake's body must end the game without moving.");
 
 Console.WriteLine("Snake game checks passed.");
 

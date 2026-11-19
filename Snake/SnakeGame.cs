@@ -69,10 +69,10 @@ public sealed class SnakeGame
             Direction.Right => head with { X = head.X + 1 },
             _ => throw new InvalidOperationException("Invalid direction.")
         };
+        next = new Cell((next.X + Width) % Width, (next.Y + Height) % Height);
         bool eating = next == Food;
         int occupiedCount = segments.Count - (eating ? 0 : 1);
-        if (next.X < 0 || next.X >= Width || next.Y < 0 || next.Y >= Height ||
-            segments.Take(occupiedCount).Contains(next))
+        if (segments.Take(occupiedCount).Contains(next))
         {
             Status = GameStatus.Lost;
             return;
