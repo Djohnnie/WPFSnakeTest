@@ -7,5 +7,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../Snake/Player.cs" Link="Player.cs" />
+    <Compile Include="../Snake/SnakeGame.cs" Link="SnakeGame.cs" />
   </ItemGroup>
 </Project>
