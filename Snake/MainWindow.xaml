@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Snake" Height="600" Width="720" MinHeight="500" MinWidth="560"
         Background="#101B1A" FontFamily="Segoe UI" Foreground="#F3F8F3"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterScreen" PreviewKeyDown="Window_PreviewKeyDown"
         FocusManager.FocusedElement="{Binding ElementName=UsernameInput}">
     <Window.Resources>
         <Style x:Key="ActionButton" TargetType="Button">
@@ -131,9 +131,37 @@
                                        Foreground="#F3F8F3" TextWrapping="Wrap" />
                         </ScrollViewer>
                     </Border>
-                    <Button x:Name="ChangeUsernameButton" Grid.Row="2" Content="Change username"
-                            HorizontalAlignment="Left" Style="{StaticResource ActionButton}"
-                            Margin="0,18,0,0" Click="ChangeUsername_Click" />
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,18,0,0">
+                        <Button Content="Play" Style="{StaticResource ActionButton}"
+                                Click="Play_Click" />
+                        <Button x:Name="ChangeUsernameButton" Content="Change username"
+                                Style="{StaticResource ActionButton}" Margin="12,0,0,0"
+                                Click="ChangeUsername_Click" />
+                    </StackPanel>
+                </Grid>
+
+                <Grid x:Name="GamePanel" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <TextBlock x:Name="GameMessage" FontSize="16" FontWeight="SemiBold"
+                                   AutomationProperties.LiveSetting="Polite" />
+                        <TextBlock Text="Use the arrow keys to steer." Foreground="#C0CFC2"
+                                   Margin="0,4,0,8" />
+                    </StackPanel>
+                    <Viewbox Grid.Row="1" Stretch="Uniform">
+                        <Canvas x:Name="GameBoard" Width="320" Height="240"
+                                Background="#101B1A" />
+                    </Viewbox>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,12,0,0">
+                        <Button x:Name="RestartButton" Content="Restart"
+                                Style="{StaticResource ActionButton}" Click="Play_Click" />
+                        <Button Content="Back to player" Style="{StaticResource ActionButton}"
+                                Margin="12,0,0,0" Click="BackToPlayer_Click" />
+                    </StackPanel>
                 </Grid>
             </Grid>
         </Border>
