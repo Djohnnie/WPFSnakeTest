@@ -33,6 +33,7 @@ public sealed class SnakeGame
         segments.Add(new Cell(Width / 2, Height / 2));
         segments.Add(new Cell(Width / 2 - 1, Height / 2));
         segments.Add(new Cell(Width / 2 - 2, Height / 2));
+        segments.Add(new Cell(Width / 2 - 3, Height / 2));
         Segments = segments.AsReadOnly();
         PlaceFood();
     }

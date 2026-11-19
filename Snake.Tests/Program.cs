@@ -16,26 +16,30 @@ if (!Player.TryCreate("  Ada Lovelace  ", out Player? player) ||
 
 Console.WriteLine("Player username checks passed.");
 
-SnakeGame game = new(new ScriptedRandom(102, 102, 0));
+SnakeGame game = new(new ScriptedRandom(101, 101, 0));
+Check(game.Segments.SequenceEqual(new[]
+{
+    new Cell(8, 6), new Cell(7, 6), new Cell(6, 6), new Cell(5, 6)
+}), "A new game must start with four contiguous blocks.");
 Cell initialTail = game.Segments[^1];
 Check(game.Food == new Cell(9, 6), "Food should start in the selected free cell.");
 game.Step();
-Check(game.Segments.Count == 4 && game.Segments[0] == new Cell(9, 6) &&
+Check(game.Segments.Count == 5 && game.Segments[0] == new Cell(9, 6) &&
       game.Segments[^1] == initialTail, "Eating must add a head and retain the tail.");
 Check(game.Food == new Cell(10, 6) && !game.Segments.Contains(game.Food.Value),
     "Food must respawn in an unoccupied cell.");
 game.Step();
-Check(game.Segments.Count == 5 && game.Segments[0] == new Cell(10, 6),
+Check(game.Segments.Count == 6 && game.Segments[0] == new Cell(10, 6),
     "Each food eaten must grow the snake once.");
 game.Turn(Direction.Up);
 game.Step();
-Check(game.Segments.Count == 5 && game.Segments[^1] != initialTail,
+Check(game.Segments.Count == 6 && game.Segments[^1] != initialTail,
     "A move without food must keep the same length and advance the tail.");
 game.Turn(Direction.Left);
 game.Step();
 game.Turn(Direction.Down);
 game.Step();
-Check(game.Status == GameStatus.Lost && game.Segments.Count == 5,
+Check(game.Status == GameStatus.Lost && game.Segments.Count == 6,
     "Moving into the body must end the game without changing the snake.");
 Cell lostHead = game.Segments[0];
 game.Step();
@@ -50,13 +54,14 @@ turns.Turn(Direction.Left);
 turns.Step();
 Check(turns.Segments[0] == new Cell(9, 5), "Only one turn is allowed per step.");
 
-SnakeGame tail = new(new ScriptedRandom(102, 0));
-tail.Step();
+SnakeGame tail = new(new ScriptedRandom(0));
 tail.Turn(Direction.Up);
 tail.Step();
-tail.Turn(Direction.Left);
+tail.Turn(Direction.Right);
 tail.Step();
 tail.Turn(Direction.Down);
+tail.Step();
+tail.Turn(Direction.Left);
 tail.Step();
 Check(tail.Status == GameStatus.Playing && tail.Segments[0] == new Cell(8, 6) &&
       tail.Segments.Count == 4, "Moving into the vacated tail cell must be allowed.");
@@ -67,10 +72,10 @@ for (int i = 0; i < 8; i++)
     rightWall.Step();
 }
 Check(rightWall.Status == GameStatus.Playing && rightWall.Segments[0] == new Cell(0, 6) &&
-      rightWall.Segments.Count == 4 && rightWall.Food == new Cell(0, 0),
+      rightWall.Segments.Count == 5 && rightWall.Food == new Cell(0, 0),
     "Crossing the right wall must wrap and eat food on the opposite side.");
 rightWall.Step();
-Check(rightWall.Segments[0] == new Cell(1, 6) && rightWall.Segments.Count == 4,
+Check(rightWall.Segments[0] == new Cell(1, 6) && rightWall.Segments.Count == 5,
     "The snake must continue moving normally after wrapping.");
 
 SnakeGame leftWall = new(new ScriptedRandom(0));
@@ -102,7 +107,7 @@ for (int i = 0; i < 6; i++)
 Check(bottomWall.Status == GameStatus.Playing && bottomWall.Segments[0] == new Cell(8, 0),
     "Crossing the bottom wall must wrap to the top.");
 
-SnakeGame wrappedCollision = new(new ScriptedRandom(102, 102, 0));
+SnakeGame wrappedCollision = new(new ScriptedRandom(101, 101, 0));
 for (int i = 0; i < 6; i++)
 {
     wrappedCollision.Step();
